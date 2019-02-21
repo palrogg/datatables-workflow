@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+
+  <style>
+  *{
+    margin: 0;
+    padding: 0;
+  }
+  body{
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 1em;
+  }
+
+  @media only screen and (max-width: 700px){
+    .table td, .table th{
+      font-size: .9em;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+    .table td{
+      padding: 0.25rem;
+    }
+  }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+
+          <table id="liste_chercheurs" class="table responsive table-striped table-bordered" style="width: 100%">
+            <thead>
+              <tr>
+                <th class="all">Nom</th>
+                <th class="all">Université</th>
+                <th>Pays</th>
+              </tr>
+            </thead>
+          </table>
+
+  </div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.2/pym.v1.js"></script>
+  <script>
+  $(document).ready(function() {
+
+    // hide country column on mobile screens
+    var isSmallScreen = ($(window).width() < 700);
+
+    var displayCountry = isSmallScreen ? false : true;
+    var paginationType = isSmallScreen ? "simple" : "full_numbers";
+    var pageLength = isSmallScreen ? 5 : 10;
+    var pymChild = new pym.Child();
+
+    $('#liste_chercheurs').DataTable( {
+      "ajax": "data/arrays.json",
+      "aaSorting": [],
+      "responsive": true,
+      /*"columnDefs": [
+        { responsivePriority: 1, targets: 0 },
+        { responsivePriority: 2, targets: 1 }
+      ],*/
+      "columnDefs": [
+            {
+                "targets": [ 2 ],
+                "visible": displayCountry
+            }
+        ],
+      "paginationType": paginationType,
+      "pageLength": pageLength,
+      "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
+      "drawCallback": function(){
+        pymChild.sendHeight();
+      },
+      "initComplete": function(){
+        pymChild.sendHeight();
+      },
+      "language": {
+        "sProcessing":     "Traitement en cours...",
+        "sSearch":         "Rechercher&nbsp;:",
+        "sLengthMenu":     "Afficher _MENU_ &eacute;l&eacute;ments",
+        "sInfo":           "Signatures _START_ &agrave; _END_ sur _TOTAL_",
+        "sInfoEmpty":      "Aucun résultat",
+        "sInfoFiltered":   "(sur _MAX_ signataires)",
+        "sInfoPostFix":    "",
+        "sLoadingRecords": "Chargement en cours...",
+        "sZeroRecords":    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+        "sEmptyTable":     "Aucune donn&eacute;e disponible dans le tableau",
+        "oPaginate": {
+          "sFirst":      "Premier",
+          "sPrevious":   "Pr&eacute;c&eacute;dent",
+          "sNext":       "Suivant",
+          "sLast":       "Dernier"
+        },
+        "oAria": {
+          "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+          "sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+        },
+        "select": {
+          "rows": {
+            _: "%d lignes séléctionnées",
+            0: "Aucune ligne séléctionnée",
+            1: "1 ligne sélectionnée"
+          }
+        }
+      }
+    } );
+
+  } );
+</script>
+</body>
+</html>
